@@ -1,0 +1,239 @@
+import { useState } from "react";
+import "./App.css";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+// Components
+import Header from "./components/Header";
+import JobDescriptionForm from "./components/JobDescriptionForm";
+import ControlsSidebar from "./components/ControlsSidebar";
+import StagingSidebar from "./components/StagingSidebar";
+import ResultsDisplay from "./components/ResultsDisplay";
+import LoadingSpinner from "./components/LoadingSpinner";
+import ThemeToggleButton from "./components/ThemeBtn";
+
+function App() {
+  const [jobDescription, setJobDescription] = useState("");
+  const [stagedFiles, setStagedFiles] = useState([]);
+  const [analysisResults, setAnalysisResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Logic: File size formatting
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+  };
+
+  // Logic: Handle file selection and prevent duplicates
+  const handleFileChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    setStagedFiles((prev) => [
+      ...prev,
+      ...newFiles.filter((nf) => !prev.some((pf) => pf.name === nf.name)),
+    ]);
+    e.target.value = null; // Reset input so same file can be re-added if removed
+  };
+
+  const handleRemoveFile = (indexToRemove) => {
+    setStagedFiles((prev) =>
+      prev.filter((_, index) => index !== indexToRemove),
+    );
+  };
+
+  const handleReset = () => {
+    setJobDescription("");
+    setStagedFiles([]);
+    setAnalysisResults([]);
+    setError("");
+  };
+
+  // Logic: PDF Generation
+  const handleDownloadReport = () => {
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      doc.text("HireSense - Analysis Report", pageWidth / 2, 20, {
+        align: "center",
+      });
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(new Date().toLocaleDateString(), pageWidth - 20, 20, {
+        align: "right",
+      });
+
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Job Description Used:", 20, 40);
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      const jdLines = doc.splitTextToSize(jobDescription, pageWidth - 40);
+      doc.text(jdLines, 20, 48);
+
+      const startYForTable = doc.getTextDimensions(jdLines).h + 55;
+
+      const tableHead = [
+        ["Rank", "Candidate", "Score", "Strengths", "Weaknesses"],
+      ];
+      const tableBody = analysisResults
+        .filter((res) => !res.error)
+        .map((res) => [
+          `#${res.rank}`,
+          res.candidateName,
+          res.score,
+          res.good_points.map((p) => `- ${p}`).join("\n"),
+          res.bad_points.map((p) => `- ${p}`).join("\n"),
+        ]);
+
+      autoTable(doc, {
+        head: tableHead,
+        body: tableBody,
+        startY: startYForTable,
+        theme: "striped",
+        headStyles: {
+          fillColor: [79, 70, 229], // Updated to match --brand-primary
+          fontSize: 11,
+          fontStyle: "bold",
+        },
+        bodyStyles: { fontSize: 9, cellPadding: 2, overflow: "linebreak" },
+        columnStyles: {
+          0: { cellWidth: 15 },
+          1: { cellWidth: 35 },
+          2: { cellWidth: 15 },
+        },
+      });
+
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.text(`Page ${i} of ${pageCount}`, pageWidth - 20, pageHeight - 10, {
+          align: "right",
+        });
+      }
+      doc.save("Hire-sense-report.pdf");
+    } catch (e) {
+      console.error("Error generating PDF:", e);
+      setError("Failed to generate PDF report.");
+    }
+  };
+
+  // Logic: API Submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    setAnalysisResults([]);
+    const formData = new FormData();
+    formData.append("jobDescription", jobDescription);
+    stagedFiles.forEach((file) => formData.append("resumes", file));
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const response = await fetch(`${apiUrl}/api/analyze`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(
+          errData.error || `HTTP error! status: ${response.status}`,
+        );
+      }
+      const data = await response.json();
+      setAnalysisResults(data.results);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="app-container">
+      {/* Floating Theme Toggle */}
+      <div
+        style={{
+          position: "fixed",
+          top: "1.5rem",
+          right: "1.5rem",
+          zIndex: 100,
+        }}
+      >
+        <ThemeToggleButton />
+      </div>
+
+      <Header />
+
+      {/* Main Layout Grid */}
+      <div className="app-layout">
+        {/* Left Sidebar: Inputs & Submit */}
+        <aside className="actions-sidebar">
+          <div className="sidebar-sticky-content">
+            <ControlsSidebar
+              handleReset={handleReset}
+              handleFileChange={handleFileChange}
+              handleSubmit={handleSubmit}
+              isLoading={isLoading}
+              stagedFiles={stagedFiles}
+              jobDescription={jobDescription}
+            />
+
+            {/* Global Error Message displayed in sidebar context */}
+            {error && (
+              <div className="error-message" style={{ marginTop: "1rem" }}>
+                <strong>Error:</strong> {error}
+              </div>
+            )}
+          </div>
+        </aside>
+
+        {/* Center: Dynamic Content Area */}
+        <main className="main-content">
+          {analysisResults.length > 0 ? (
+            <ResultsDisplay
+              analysisResults={analysisResults}
+              handleReset={handleReset}
+              handleDownloadReport={handleDownloadReport}
+            />
+          ) : isLoading ? (
+            <div
+              className="card"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "4rem",
+              }}
+            >
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <JobDescriptionForm
+              jobDescription={jobDescription}
+              setJobDescription={setJobDescription}
+            />
+          )}
+        </main>
+
+        {/* Right Sidebar: File Queue */}
+        <StagingSidebar
+          stagedFiles={stagedFiles}
+          handleRemoveFile={handleRemoveFile}
+          formatFileSize={formatFileSize}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default App;
