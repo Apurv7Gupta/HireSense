@@ -43,3 +43,7 @@ lerna-debug.log*
 *.sln
 *.sw?
 Thumbs.db
+
+
+#MISC
+/Resumes
