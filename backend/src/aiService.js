@@ -43,7 +43,7 @@ const rankedListSchema = z.object({
         .describe(
           "Why this candidate was ranked in this position relative to others.",
         ),
-      // ✅ kept your addition
+
       improvement_suggestions: z
         .array(z.string())
         .optional()
@@ -52,7 +52,7 @@ const rankedListSchema = z.object({
         ),
     }),
   ),
-  // ✅ kept your additions
+
   top_candidate_cold_mail: z
     .string()
     .describe(
@@ -185,7 +185,6 @@ Experience: ${c.experience_summary}`,
     if (finalResults.length > 0) {
       const sorted = finalResults.sort((a, b) => a.rank - b.rank);
 
-      // ✅ attach global data to top candidate
       sorted[0].cold_mail = result.top_candidate_cold_mail;
       sorted[0].target_companies = result.target_companies;
 
@@ -198,10 +197,10 @@ Experience: ${c.experience_summary}`,
 
     console.warn("Falling back to simple sorting based on initial scores.");
 
-    // ✅ FULLY RESTORED correct fallback logic
+    // fallback logic
     return analyzedResumes
       .map((r, index) => ({ ...r, rank: index + 1 }))
       .sort((a, b) => b.score - a.score)
-      .map((r, index) => ({ ...r, rank: index + 1 })); // <-- critical fix restored
+      .map((r, index) => ({ ...r, rank: index + 1 }));
   }
 }

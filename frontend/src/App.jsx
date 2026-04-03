@@ -49,7 +49,6 @@ function App() {
     setError("");
   };
 
-  // ✅ FIXED + MERGED VERSION
   const handleDownloadReport = () => {
     try {
       const doc = new jsPDF();
@@ -80,15 +79,14 @@ function App() {
 
       let currentY = doc.getTextDimensions(jdLines).h + 55;
 
-      // ✅ FULL TABLE (RESTORED + NEW FEATURES)
       const tableHead = [
         [
           "Rank",
           "Candidate",
           "Score",
           "Strengths",
-          "Weaknesses", // ✅ restored
-          "Improvements Needed", // ✅ new kept
+          "Weaknesses",
+          "Improvements Needed",
         ],
       ];
 
@@ -100,10 +98,8 @@ function App() {
           res.score,
           res.good_points.map((p) => `- ${p}`).join("\n"),
 
-          // ✅ restored bad_points
           res.bad_points?.map((p) => `- ${p}`).join("\n") || "N/A",
 
-          // ✅ improvements logic kept
           res.rank > 1
             ? res.improvement_suggestions?.map((s) => `* ${s}`).join("\n") ||
               "N/A"
@@ -116,7 +112,6 @@ function App() {
         startY: currentY,
         theme: "striped",
 
-        // ✅ restored styling
         headStyles: {
           fillColor: [79, 70, 229],
           fontSize: 11,
@@ -128,7 +123,6 @@ function App() {
           overflow: "linebreak",
         },
 
-        // ✅ restored column widths (adjusted for extra column)
         columnStyles: {
           0: { cellWidth: 15 },
           1: { cellWidth: 30 },
@@ -141,7 +135,7 @@ function App() {
 
       currentY = doc.lastAutoTable.finalY + 15;
 
-      // ✅ Cold Mail (unchanged)
+      // Cold Mail
       const topCand = analysisResults.find((r) => r.rank === 1);
       if (topCand && topCand.cold_mail) {
         if (currentY > pageHeight - 60) {

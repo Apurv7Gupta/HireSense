@@ -117,10 +117,7 @@ const ResultsDisplay = ({
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         {analysisResults.map((result, index) => (
           <div key={index} className="result-card">
-            <div
-              className="result-header"
-              style={{ marginBottom: "0.5rem" }} // ✅ RESTORED spacing
-            >
+            <div className="result-header" style={{ marginBottom: "0.5rem" }}>
               <div className="result-title" style={{ fontSize: "1.2rem" }}>
                 <span
                   style={{
@@ -138,10 +135,10 @@ const ResultsDisplay = ({
                 <div className="score-badge">
                   <span
                     style={{
-                      fontSize: "1rem", // ✅ RESTORED
-                      opacity: 0.9, // ✅ RESTORED
-                      marginRight: "4px", // ✅ RESTORED
-                      textTransform: "uppercase", // ✅ RESTORED
+                      fontSize: "1rem",
+                      opacity: 0.9,
+                      marginRight: "4px",
+                      textTransform: "uppercase",
                     }}
                   >
                     Score
@@ -157,16 +154,13 @@ const ResultsDisplay = ({
               <>
                 <div
                   className="points-container"
-                  style={{ alignItems: "flex-start" }} // ✅ RESTORED alignment
+                  style={{ alignItems: "flex-start" }}
                 >
                   <div className="good-points" style={{ flex: 1 }}>
                     <h4>Strengths</h4>
                     <ul>
                       {result.good_points.map((p, i) => (
-                        <li
-                          key={i}
-                          style={{ marginBottom: "4px" }} // ✅ RESTORED spacing
-                        >
+                        <li key={i} style={{ marginBottom: "4px" }}>
                           {p}
                         </li>
                       ))}
@@ -177,10 +171,7 @@ const ResultsDisplay = ({
                     <h4>Weaknesses</h4>
                     <ul>
                       {result.bad_points.map((p, i) => (
-                        <li
-                          key={i}
-                          style={{ marginBottom: "4px" }} // ✅ RESTORED spacing
-                        >
+                        <li key={i} style={{ marginBottom: "4px" }}>
                           {p}
                         </li>
                       ))}
