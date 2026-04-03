@@ -8,7 +8,7 @@ const ResultsDisplay = ({
       id="results-section"
       style={{ display: "flex", flexDirection: "column", gap: "2rem" }}
     >
-      {/* Header Section */}
+      {/* Header */}
       <div
         style={{
           display: "flex",

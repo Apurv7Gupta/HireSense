@@ -7,7 +7,6 @@ const getSystemTheme = () =>
 
 const ThemeToggleButton = () => {
   const [theme, setTheme] = useState(() => {
-    // Check local storage first, then fallback to system preference
     return localStorage.getItem(THEME_KEY) || getSystemTheme();
   });
 
@@ -15,7 +14,7 @@ const ThemeToggleButton = () => {
 
   useEffect(() => {
     const root = document.documentElement;
-    // Your App.css uses [data-theme="dark"] for overrides
+
     if (theme === "dark") {
       root.setAttribute("data-theme", "dark");
     } else {
@@ -43,7 +42,6 @@ const ThemeToggleButton = () => {
         gap: "0.6rem",
         padding: "0.5rem 1rem",
 
-        // Using your design tokens for consistency
         borderRadius: "var(--border-radius-md)",
         background: "var(--bg-card)",
         border: "1px solid var(--border-color)",
@@ -58,13 +56,12 @@ const ThemeToggleButton = () => {
         transform: hovered ? "translateY(-1px)" : "none",
       }}
     >
-      {/* Dynamic Status Icon */}
       <span
         style={{
           width: "12px",
           height: "12px",
           borderRadius: "50%",
-          // Using your brand accent and status warning colors
+
           background: isDark ? "var(--brand-accent)" : "var(--status-warning)",
           boxShadow: isDark
             ? "0 0 8px var(--brand-primary)"
@@ -73,7 +70,6 @@ const ThemeToggleButton = () => {
         }}
       />
 
-      {/* Clear labeling: Shows what mode you are currently in */}
       <span>{isDark ? "Dark Mode" : "Light Mode"}</span>
     </button>
   );

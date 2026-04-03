@@ -4,7 +4,6 @@ const StagingSidebar = ({ stagedFiles, handleRemoveFile, formatFileSize }) => {
   return (
     <aside className="staging-sidebar">
       <div className="sidebar-sticky-content">
-        {/* Inherits h4 styling and padding from .sidebar-section */}
         <div className="sidebar-section">
           <h4>Staged Files ({stagedFiles.length})</h4>
 
@@ -23,7 +22,7 @@ const StagingSidebar = ({ stagedFiles, handleRemoveFile, formatFileSize }) => {
                     background: "var(--bg-secondary)",
                     border: "1px solid var(--border-color)",
                     borderRadius: "var(--border-radius-md)",
-                    animation: "slideUp 300ms ease-out", // Uses your slideUp animation
+                    animation: "slideUp 300ms ease-out",
                   }}
                 >
                   <div style={{ fontSize: "1.2rem" }}>📄</div>

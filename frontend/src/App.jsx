@@ -100,7 +100,7 @@ function App() {
         startY: startYForTable,
         theme: "striped",
         headStyles: {
-          fillColor: [79, 70, 229], // Updated to match --brand-primary
+          fillColor: [79, 70, 229],
           fontSize: 11,
           fontStyle: "bold",
         },
@@ -127,7 +127,6 @@ function App() {
     }
   };
 
-  // Logic: API Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -161,7 +160,7 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Floating Theme Toggle */}
+      {/* Theme */}
       <div
         style={{
           position: "fixed",
@@ -177,7 +176,7 @@ function App() {
 
       {/* Main Layout Grid */}
       <div className="app-layout">
-        {/* Left Sidebar: Inputs & Submit */}
+        {/* Left Sidebar */}
         <aside className="actions-sidebar">
           <div className="sidebar-sticky-content">
             <ControlsSidebar
@@ -189,7 +188,6 @@ function App() {
               jobDescription={jobDescription}
             />
 
-            {/* Global Error Message displayed in sidebar context */}
             {error && (
               <div className="error-message" style={{ marginTop: "1rem" }}>
                 <strong>Error:</strong> {error}
@@ -198,7 +196,6 @@ function App() {
           </div>
         </aside>
 
-        {/* Center: Dynamic Content Area */}
         <main className="main-content">
           {analysisResults.length > 0 ? (
             <ResultsDisplay
@@ -225,7 +222,7 @@ function App() {
           )}
         </main>
 
-        {/* Right Sidebar: File Queue */}
+        {/* Right Sidebar (File Queue) */}
         <StagingSidebar
           stagedFiles={stagedFiles}
           handleRemoveFile={handleRemoveFile}

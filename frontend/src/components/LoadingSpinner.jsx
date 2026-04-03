@@ -14,7 +14,6 @@ const LoadingSpinner = () => {
         gap: "1.5rem",
       }}
     >
-      {/* MATCHED TO APP.CSS: .loader */}
       <div className="loader"></div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>

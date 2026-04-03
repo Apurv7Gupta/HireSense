@@ -4,7 +4,6 @@ import { z } from "zod";
 
 // --- SCHEMAS ---
 
-// Schema for individual resume analysis (Map step)
 const singleCandidateAnalysisSchema = z.object({
   candidateName: z
     .string()
@@ -32,7 +31,7 @@ const singleCandidateAnalysisSchema = z.object({
     .describe("Brief summary of relevant experience."),
 });
 
-// Schema for the final ranking (Reduce step)
+// Schema for final ranking
 const rankedListSchema = z.object({
   ranked_candidates: z.array(
     z.object({
@@ -110,7 +109,7 @@ const rankingChain = rankingPrompt.pipe(rankingModel);
 // --- FUNCTIONS ---
 
 /**
- * Analyzes a single resume against the JD.
+ 
  * @param {string} jobDescription
  * @param {string} resumeText
  * @param {string} fileName
@@ -136,9 +135,9 @@ export async function analyzeSingleResume(
 }
 
 /**
- * Ranks a batch of already analyzed resumes.
+ *
  * @param {string} jobDescription
- * @param {Array} analyzedResumes - Array of objects returned by analyzeSingleResume
+ * @param {Array} analyzedResumes
  */
 export async function rankCandidates(jobDescription, analyzedResumes) {
   const candidatesString = analyzedResumes
@@ -158,15 +157,14 @@ export async function rankCandidates(jobDescription, analyzedResumes) {
       candidate_analyses: candidatesString,
     });
 
-    // Merge the ranking details back with the original detailed analysis
     const finalResults = result.ranked_candidates.map((ranked) => {
       const original = analyzedResumes.find(
         (a) => a.fileName === ranked.fileName,
       );
       return {
-        ...original, // Keep the detailed good/bad points from the first pass
+        ...original,
         rank: ranked.rank,
-        score: ranked.final_score, // Use the calibrated score from the ranking phase
+        score: ranked.final_score,
         ranking_reasoning: ranked.reasoning,
       };
     });
@@ -174,7 +172,7 @@ export async function rankCandidates(jobDescription, analyzedResumes) {
     return finalResults.sort((a, b) => a.rank - b.rank);
   } catch (error) {
     console.error("Error in ranking candidates:", error);
-    // Fallback: just sort by the initial scores if the ranking step fails
+
     console.warn("Falling back to simple sorting based on initial scores.");
     return analyzedResumes
       .map((r, index) => ({ ...r, rank: index + 1 })) // Temporary rank

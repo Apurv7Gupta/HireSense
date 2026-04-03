@@ -16,13 +16,11 @@ const JobDescriptionForm = ({ jobDescription, setJobDescription }) => {
   const characterCount = useMemo(() => jobDescription.length, [jobDescription]);
 
   return (
-    /* Changed 'card' to 'sidebar-section' to match your Sidebar styles */
     <section
       className="sidebar-section"
       aria-labelledby="job-description-label"
     >
       <div className="form-group">
-        {/* The <h4> here will now inherit your uppercase, letter-spaced sidebar header style */}
         <h4 id="job-description-label">Job Description</h4>
 
         <textarea
@@ -32,7 +30,7 @@ const JobDescriptionForm = ({ jobDescription, setJobDescription }) => {
           onChange={handleChange}
           placeholder="Paste the full job description here..."
           required
-          rows={10} // Reduced rows slightly for better sidebar fit
+          rows={10}
           maxLength={MAX_LENGTH}
           aria-describedby="job-description-meta"
         />

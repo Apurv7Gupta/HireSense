@@ -10,7 +10,7 @@ const ControlsSidebar = ({
 }) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      {/* SECTION: Global Actions */}
+      {/* Global Actions */}
       <div className="sidebar-section">
         <h4>Actions</h4>
         <button
@@ -29,7 +29,7 @@ const ControlsSidebar = ({
         </button>
       </div>
 
-      {/* SECTION: File Upload Area */}
+      {/* File Upload Area */}
       <div className="sidebar-section">
         <h4>Upload Resumes</h4>
         <div className="file-input-wrapper">
@@ -55,7 +55,7 @@ const ControlsSidebar = ({
         </div>
       </div>
 
-      {/* SECTION: Primary Execution Action */}
+      {/* Primary Action */}
       <div
         className="sidebar-section"
         style={{
