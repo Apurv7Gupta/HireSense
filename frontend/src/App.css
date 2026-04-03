@@ -524,3 +524,70 @@ textarea:focus {
   border-radius: var(--border-radius-md);
   font-size: 0.9rem;
 }
+
+/* =========================================================
+   New Feature Styles (Insights & Enhancements)
+========================================================= */
+
+.strategy-card {
+  border-left: 4px solid var(--brand-primary);
+  background: var(--bg-secondary);
+  animation: slideUp 400ms ease-out;
+}
+
+.improvement-box {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border-radius: var(--border-radius-md);
+  background: rgba(245, 158, 11, 0.08); /* Transparent Warning Yellow */
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.improvement-box h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.75rem;
+  color: var(--status-warning);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.improvement-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.improvement-list li {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.improvement-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--status-warning);
+  font-weight: bold;
+}
+
+.company-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.company-tag {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--brand-primary);
+}
